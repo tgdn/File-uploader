@@ -3,6 +3,9 @@
 import os
 import uploader.settings as settings
 
+os.mkdir("%s/../db/" % settings.MEDIA_ROOT)
+os.system("python %s/../manage.py syncdb" % settings.MEDIA_ROOT)
+
 try:
   os.mkdir("%s/uploads/" % settings.MEDIA_ROOT)
 except OSError:
