@@ -1,0 +1,105 @@
+{% load i18n %}
+{% load base_extras %}
+<html>
+  <head>
+    {% get_css '/media/css/main.css' %}
+    {% get_css '/media/css/undo.css' %}
+  </head>
+  <body>
+  
+    <div id='profile_photo_upload'>
+      <div class='button' id='file-upload'>
+        <button class="green_button">{% trans 'Browse ...' %}</button>
+      </div>
+      <div>
+        <button class="green_button" id="delete_files">{% trans 'Delete all files ...' %}</button>
+      </div>
+      <div class="file_list">
+        {% for file in files %}
+          <img src="{{ MEDIA_URL }}{{ file }}" style="background: none repeat scroll 0% 0% rgb(255, 255, 255); border: 1px solid rgb(217, 217, 217); box-shadow: 0pt 1px 4px rgb(204, 204, 204); margin: 1px; padding: 1px; max-height: 350px;">
+        {% endfor %}
+      </div>
+        <br>
+        <br>
+        <p>
+          <div id='fileInfo'></div>
+        </p>
+        <br>
+      </div>
+		
+		  {% get_js '/media/js/fileuploader-custom.js' %}
+		  {% get_js '/media/js/jquery.js' %}
+		  
+		  <script type="text/javascript">
+		  $(document).ready(function(){
+		    $('#delete_files').click(function(){
+		      $.ajax({
+		        type: 'POST',
+		        url: "/delete/",
+		        success:function(){
+		          $('.file_list').empty();
+		        }
+		      })
+		    })
+		  });
+		  </script>
+		
+      <script type="text/javascript">
+        function createUploader(){
+          var uploader = new qq.FileUploaderBasic({
+            element: document.getElementById('file-upload'),
+            params: {},
+            multiple:true,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+            action: "/upload/",
+            debug: true,
+            button: document.getElementById('file-upload'),
+            sizeLimit: 4194304,
+
+
+            onProgress: function(id, fileName, loaded, total){
+              var progress = Math.round(loaded / total * 100 );
+              $('#fileInfo').text(fileName + ' ' + progress + '%');
+            },
+
+            messages: {
+              typeError: "{file} a une extension invalide. Seules {extensions} sont autorisées.",
+              sizeError: "{file} est trop grand, la taille maximum pour un fichier est {sizeLimit}.",
+              emptyError: "{file} est vide, merci de sélectionner de nouveau des fichiers sans celui-ci."
+            },
+
+            onSubmit: function(id, fileName){
+              $('#file-upload').addClass("loading");
+            },
+
+            onComplete: function(id, fileName, responseJSON)
+            {
+              $('#fileInfo').text(fileName + ' completed').fadeOut(2000);
+              $('#file-upload').removeClass("loading");
+              var url = responseJSON.url;
+              var oldPhoto = $('#photo_id');
+
+              if(oldPhoto.length == 0)
+              {
+                $('#update_profile_form').prepend("<input type='hidden' value='" + id + "' id='photo_id' name='photo_id'/>");
+              }
+              else{
+                oldPhoto.val(id);
+              }
+
+              //$("#profile_photo_upload").find(".avatar").fadeTo(200,1);
+              //$(".avatar").attr("src",url);
+              $('.file_list').append('<img class="avatar" id="avatar_id" style="background:#fff;border:1px solid #D9D9D9;box-shadow:0 1px 4px #CCCCCC;margin:1px;padding:1px;max-height:450px;max-height:350px;	" src="'+url+'">')
+            },
+
+            onAllComplete: function(completed_files){
+            }
+
+          });
+        }
+        window.onload = createUploader;
+      </script>
+	
+  </body>
+	
+</html>

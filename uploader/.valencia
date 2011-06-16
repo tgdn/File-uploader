@@ -1,0 +1,3 @@
+version = 1
+build_command = valac --pkg gtk+-2.0
+clean_command = make clean
