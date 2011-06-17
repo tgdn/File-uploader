@@ -11,10 +11,11 @@ except OSError:
   pass
 
 os.system("python manage.py syncdb")
-os.chdir(settings.MEDIA_URL)
 
 try:
-  os.mkdir("uploads/")
+  os.mkdir("media/uploads")
 except OSError:
-  print("\n\n============= Everything is installed and up-to-date =============\n")
-  print("\tRun server with commands: python manage.py runserver [[port]]\n")
+  pass
+
+print("\n\n============= Everything is installed and up-to-date =============\n")
+print("\tRun server with commands: python manage.py runserver [[port]]\n")
