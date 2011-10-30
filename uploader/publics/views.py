@@ -28,26 +28,13 @@ def upload(request):
 		photoForm.save()
 	#
 	if request.is_ajax():
-	
-#		for file in request.POST:
-#			name = request.GET.get('qqfile', 'some_name')
-#			url = '%s/uploads/' % settings.MEDIA_ROOT
-#			destination = open('%s%s' % (url, name), 'wb+')
-#			for chunk in file.chunks():
-#				destination.write(chunk)
-#			destination.close()
 		image = request.raw_post_data
 		name = request.GET.get('qqfile', 'some_name')
 		url = '%s/uploads/' % settings.MEDIA_ROOT
 		
-#		Looking if image with same name exists {
-		try:
-			d = open('%s%s' % (url, name), 'r')
-			key = ''.join([choice('abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPKRSTUVWXYZ@$%&-_=+') for i in range(8)])
-			name = '%s_%s' % (key, name)
-		except IOError:
-			pass
-#		}
+# Updating name
+        key = ''.join([choice('abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPKRSTUVWXYZ') for i in range(8)])
+        name = '%s_%s' % (key, name)
 
 #		Writing image {
 		destination = open('%s%s' % (url, name), 'wb+')
